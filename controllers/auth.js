@@ -1,3 +1,6 @@
+import jwt from 'jsonwebtoken';
+import config from '../config';
+
 import User from '../models/user';
 
 export const signup = async (req, res, next) => {
@@ -18,7 +21,7 @@ export const signup = async (req, res, next) => {
 
 }
 
-export const signin = async (req, res, next) => {
+export const signin = async(req, res, next) => {
     const { login, password } = req.body;
     console.log('hi');
     const user = await User.findOne({ login });
@@ -39,8 +42,9 @@ export const signin = async (req, res, next) => {
             message: 'Bad Credentials'
         });
     }
-    req.session.userId = user._id;
+    // req.session.userId = user._id;
+    const token = jwt.sign({ _id: user._id }, config.secret);
 
-    res.json(user);
+    res.json(token);
 }
 

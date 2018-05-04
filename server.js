@@ -8,13 +8,14 @@ import bluebird from 'bluebird';
 import config from './config';
 import authRoute from './routes/auth';
 import errorHandler from './middlewares/errorHandler';
+import checkToken from './middlewares/checkToken';
 
 const app = express();
 
 mongoose.Promise = bluebird;
 mongoose.connect(config.database, err => {
     if (err) {
-        throw err
+        throw err;
     }
     console.log('Mongo connected');
 })
@@ -39,4 +40,9 @@ app.use(session({
 // });
 
 app.use('/api', authRoute);
+
+app.get('/test', checkToken, (req, res) => {
+    res.json('test')
+});
+
 app.use(errorHandler);
